@@ -5,6 +5,7 @@ import V1Router from './routers/v1/index.router';
 import { genericErrorHandler } from './middlewares/error.middleware';
 import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './middlewares/correlation.middleware';
+import { setupMailerWorker } from './processors/email.processor';
 
 
 
@@ -24,4 +25,6 @@ app.use(genericErrorHandler);
 app.listen(serverConfig.PORT,()=>{
     logger.info(`Port is running on http://localhost:${serverConfig.PORT}`);
     logger.info(`Press Cnt+C to exist`,{"server":"dev server"});
+    setupMailerWorker();
+    logger.info(`Mailer worker setup completed`)
 })
