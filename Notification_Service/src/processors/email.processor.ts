@@ -15,6 +15,7 @@ export const setupMailerWorker = () => {
         throw new BadRequestError("Invalid job name");
       }
       // call the service layer for business logic
+      console.log(`Processing email for ${JSON.stringify(job.data)}`)
     },
 
     // connection of redis instance
