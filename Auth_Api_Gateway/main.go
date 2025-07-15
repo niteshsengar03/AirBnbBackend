@@ -3,8 +3,6 @@ package main
 import (
 	"Auth_Api_Gateway/app"
 	"Auth_Api_Gateway/config"
-	"net/http"
-	"github.com/go-chi/chi/v5"
 )
 
 func main() {
@@ -14,12 +12,6 @@ func main() {
 	}
 	app := app.Application{
 		Config: cfg,
-	}
-
-	r := chi.NewRouter()
-
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("welcome"))
-	})
-	app.Run(r)
+	}	
+	app.Run()
 }

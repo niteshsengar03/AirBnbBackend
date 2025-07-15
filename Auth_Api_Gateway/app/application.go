@@ -1,6 +1,7 @@
 package app
 
 import (
+	"Auth_Api_Gateway/router"
 	"fmt"
 	"net/http"
 	"time"
@@ -14,10 +15,10 @@ type Application struct{
 	Config Config
 }
 
-func (app *Application) Run(handler http.Handler) error{
+func (app *Application) Run() error{
 	server := &http.Server{
 		Addr: app.Config.Addr,
-		Handler: handler,
+		Handler: router.SetupRouter(),
 		ReadTimeout: 10*time.Second,
 		WriteTimeout: 10*time.Second,
 	}
