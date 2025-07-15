@@ -2,22 +2,24 @@ package main
 
 import (
 	"Auth_Api_Gateway/app"
-	"log"
-	"os"
-
-	"github.com/joho/godotenv"
+	"Auth_Api_Gateway/config"
+	"net/http"
+	"github.com/go-chi/chi/v5"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+
 	cfg := app.Config{
-		Addr: os.Getenv("PORT"),
+		Addr: config.GetString("PORT", ":3002"),
 	}
 	app := app.Application{
 		Config: cfg,
 	}
-	app.Run()
+
+	r := chi.NewRouter()
+
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("welcome"))
+	})
+	app.Run(r)
 }

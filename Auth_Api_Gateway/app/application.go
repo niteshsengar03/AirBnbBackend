@@ -14,10 +14,10 @@ type Application struct{
 	Config Config
 }
 
-func (app *Application) Run() error{
+func (app *Application) Run(handler http.Handler) error{
 	server := &http.Server{
 		Addr: app.Config.Addr,
-		Handler: nil,
+		Handler: handler,
 		ReadTimeout: 10*time.Second,
 		WriteTimeout: 10*time.Second,
 	}
