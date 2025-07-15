@@ -7,11 +7,7 @@ import (
 
 func main() {
 	config.Load()
-	cfg := app.Config{
-		Addr: config.GetString("PORT", ":3002"),
-	}
-	app := app.Application{
-		Config: cfg,
-	}	
+	cfg := app.NewConfig()
+	app := app.NewApplication(*cfg)
 	app.Run()
 }
