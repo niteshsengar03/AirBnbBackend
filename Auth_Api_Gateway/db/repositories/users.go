@@ -1,15 +1,24 @@
 package db
 
-import "database/sql"
+import (
+	"fmt"
+)
 
-type UserRepository interface{
-	createUser() error
+type UserRepository interface {
+	Create() error
 }
 
-type UserRepositoryImp struct{
-	db *sql.DB // DB instance given by SQL
+type UserRepositoryImp struct {
+	// db *sql.DB // DB instance given by SQL
 }
 
-func(u *UserRepositoryImp) createUser()error{
+func NewRepository() UserRepository {
+	return &UserRepositoryImp{
+		// db:db,
+	}
+}
+
+func (u *UserRepositoryImp) Create() error {
+	fmt.Println("Creating user in UserRepo")
 	return nil
 }

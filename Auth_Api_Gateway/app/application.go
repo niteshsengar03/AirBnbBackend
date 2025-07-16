@@ -2,8 +2,10 @@ package app
 
 import (
 	"Auth_Api_Gateway/config"
+	"Auth_Api_Gateway/controller"
 	"Auth_Api_Gateway/db/repositories"
 	"Auth_Api_Gateway/router"
+	"Auth_Api_Gateway/service"
 	"fmt"
 	"net/http"
 	"time"
@@ -45,10 +47,14 @@ func NewApplication(cfg Config)*Application{
 
 
 func (app *Application) Run() error {
+	ur := db.NewRepository()
+	us := service.NewUserService(ur)
+	uc := controller.NewUserController(us)
+	urouter := router.NewUserRouter(uc)
 
 	server := &http.Server{
 		Addr:         app.Config.Addr,
-		Handler:      router.SetupRouter(),
+		Handler:      router.SetupRouter(urouter),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
