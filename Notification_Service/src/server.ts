@@ -39,4 +39,3 @@ app.listen(serverConfig.PORT, () => {
 
   addEmailToQueue(sampleNotification);
 });
-// hii
