@@ -6,14 +6,14 @@ package db
 // )
 
 // Storage Struct take out of the responsibitly from
-// service layer to make objects of all repository 
+// service layer to make objects of all repository
 
-type Storage struct{
+type Storage struct {
 	userRepository UserRepository
 }
 
-func NewStorage() *Storage{
+func NewStorage() *Storage {
 	return &Storage{
 		userRepository: &UserRepositoryImp{},
-	} 
+	}
 }

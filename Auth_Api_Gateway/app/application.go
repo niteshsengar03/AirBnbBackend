@@ -7,7 +7,6 @@ import (
 	"Auth_Api_Gateway/db/repositories"
 	"Auth_Api_Gateway/router"
 	"Auth_Api_Gateway/service"
-	// "database/sql"
 	"fmt"
 	"net/http"
 	"time"

@@ -6,16 +6,16 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-type UserRouter struct{
+type UserRouter struct {
 	UserController *controller.UserController
 }
 
-func NewUserRouter(_userController *controller.UserController) Router{
+func NewUserRouter(_userController *controller.UserController) Router {
 	return &UserRouter{
-		UserController: _userController, 
+		UserController: _userController,
 	}
 }
 
-func(u *UserRouter) Register(r chi.Router){
-	r.Get("/signup", u.UserController.RegisterUser)
+func (u *UserRouter) Register(r chi.Router) {
+	r.Get("/profile", u.UserController.GetUserById)
 }

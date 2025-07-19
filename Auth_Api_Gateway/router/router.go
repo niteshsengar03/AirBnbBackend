@@ -1,6 +1,6 @@
 package router
 
-import ( 
+import (
 	"github.com/go-chi/chi/v5"
 )
 
