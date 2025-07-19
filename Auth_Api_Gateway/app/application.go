@@ -2,10 +2,12 @@ package app
 
 import (
 	"Auth_Api_Gateway/config"
+	dbConfig "Auth_Api_Gateway/config/db"
 	"Auth_Api_Gateway/controller"
 	"Auth_Api_Gateway/db/repositories"
 	"Auth_Api_Gateway/router"
 	"Auth_Api_Gateway/service"
+	// "database/sql"
 	"fmt"
 	"net/http"
 	"time"
@@ -47,7 +49,12 @@ func NewApplication(cfg Config)*Application{
 
 
 func (app *Application) Run() error {
-	ur := db.NewRepository()
+	DB,err:=dbConfig.SetupDB();
+	if err!=nil{
+		fmt.Println("Cannot connect to database")
+		return err
+	}
+	ur := db.NewRepository(DB);
 	us := service.NewUserService(ur)
 	uc := controller.NewUserController(us)
 	urouter := router.NewUserRouter(uc)
