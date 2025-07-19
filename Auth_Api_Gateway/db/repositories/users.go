@@ -48,3 +48,4 @@ func (u *UserRepositoryImp) GetById() error {
 	fmt.Println("User fetched succesfully", *user)
 	return nil
 }
+
