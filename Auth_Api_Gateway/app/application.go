@@ -60,5 +60,5 @@ func (app *Application) Run() error {
 	}
 	fmt.Println("Starting server on", app.Config.Addr)
 	return server.ListenAndServe()
-
+	
 }
