@@ -20,3 +20,15 @@ func (uc *UserController) GetUserById(w http.ResponseWriter, r *http.Request) {
 	uc.UserService.GetUserById()
 	w.Write([]byte("User by ID called sucessfully"))
 }
+
+func (uc *UserController) CreateUser(w http.ResponseWriter, r *http.Request){
+	uc.UserService.CreateUser("nik","nik@gmail.com","1234")
+	w.Write([]byte("User created sucessfully"))
+}
+
+
+func (uc *UserController) LoginUser(w http.ResponseWriter, r *http.Request){
+	uc.UserService.LoginUser();
+	w.Write([]byte("User loged in sucesfuly"))
+}
+

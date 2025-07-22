@@ -4,6 +4,8 @@ import (
 	"Auth_Api_Gateway/models"
 	"database/sql"
 	"fmt"
+
+	// "github.com/ydb-platform/ydb-go-sdk/v3/query"
 	// "github.com/ydb-platform/ydb-go-sdk/v3/query"
 )
 
@@ -11,6 +13,7 @@ type UserRepository interface {
 	GetById() error
 	Create(string,string,string) error
 	GetAll() error
+	GetByEmail(string) (*models.User,error)
 	// DeleteById() error
 }
 
@@ -51,6 +54,24 @@ func (u *UserRepositoryImp) GetById() error {
 	// print user details
 	fmt.Println("User fetched succesfully", *user)
 	return nil
+}
+
+func (u *UserRepositoryImp) GetByEmail(email string) (*models.User,error){
+	query := "SELECT id,username,password FROM users WHERE email=?"
+	row:= u.db.QueryRow(query,email)
+	user := &models.User{}
+	err := row.Scan(&user.Id,&user.Username,&user.Password)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			fmt.Println("No user found with the given Email")
+			return nil,err
+		} else {
+			fmt.Print("Error scanning user:", err)
+			return user,err
+		}
+	}
+	fmt.Println("User fetched succesfully", *user)
+	return user,nil
 }
 
 func (u *UserRepositoryImp) Create(username string,email string,hassPassword string) error {
