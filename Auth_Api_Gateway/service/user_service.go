@@ -9,7 +9,8 @@ import (
 
 type UserService interface{
 	GetUserById() error
-	HashPassword(string) error
+	HashPassword(string) string
+	CreateUser(string,string,string) error
 }
 
 type UserServiceImp struct{
@@ -30,17 +31,22 @@ func(u *UserServiceImp) GetUserById() error{
 	// u.UserRepository.Create()
 	// u.UserRepository.GetById()
 	// u.UserRepository.GetAll()
-	u.HashPassword("123")
+	u.CreateUser("Alic","alice@gmail.com","Bob")
 	return nil
 }
 
-func (u *UserServiceImp) HashPassword(password string)error{
+func(u *UserServiceImp) CreateUser(username string,email string,password string)error{
+	HassPassword := u.HashPassword(password)
+	u.UserRepository.Create(username,email,HassPassword)
+	return nil
+}
+
+func (u *UserServiceImp) HashPassword(password string)string{
 	pass := []byte(password)
 	hass,err := bcrypt.GenerateFromPassword(pass,bcrypt.DefaultCost)
 	if err!=nil{
 		panic(err)
 	}
 	fmt.Println(string(hass))
-	u.UserRepository.Create(string(hass))
-	return nil
+	return string(hass)
 }
