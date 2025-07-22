@@ -9,7 +9,7 @@ import (
 
 type UserRepository interface {
 	GetById() error
-	Create() error
+	Create(string,string,string) error
 	GetAll() error
 	// DeleteById() error
 }
@@ -53,11 +53,13 @@ func (u *UserRepositoryImp) GetById() error {
 	return nil
 }
 
-func (u *UserRepositoryImp) Create() error {
+func (u *UserRepositoryImp) Create(username string,email string,hassPassword string) error {
 
 	// prepare querry
 	query := "INSERT INTO users(username,email,password)VALUES(?,?,?)"
-	result, err := u.db.Exec(query, "amit", "nik@gmail.com", "123")
+	
+	result, err := u.db.Exec(query, username, email, hassPassword)
+
 	if err != nil {
 		fmt.Println("Canot insert data")
 		return err

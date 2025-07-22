@@ -57,7 +57,6 @@ func (app *Application) Run() error {
 	us := service.NewUserService(ur)
 	uc := controller.NewUserController(us)
 	urouter := router.NewUserRouter(uc)
-
 	server := &http.Server{
 		Addr:         app.Config.Addr,
 		Handler:      router.SetupRouter(urouter),
