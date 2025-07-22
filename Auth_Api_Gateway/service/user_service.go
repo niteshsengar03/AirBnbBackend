@@ -29,3 +29,8 @@ func(u *UserServiceImp) GetUserById() error{
 	u.UserRepository.GetAll()
 	return nil
 }
+
+func (u *UserServiceImp) HashPassword(password string)error{
+	
+	return nil
+}
