@@ -3,7 +3,6 @@ package utils
 import (
 	"encoding/json"
 	"net/http"
-
 	"github.com/go-playground/validator/v10"
 )
 
@@ -33,5 +32,22 @@ func WriteJsonResponse(w http.ResponseWriter, status int, data any) error {
 	return json.NewEncoder(w).Encode(data) // encode data as json
 }
 
+func WriteJsonSuccessResponse(w http.ResponseWriter, status int, message string, data any)error{
+	response := map[string]any{
+		"status":"success",
+		"message":message,
+		"data":data,
+	}
+	return WriteJsonResponse(w,status,response)
+}
+
+func WriteJsonErrorResponse(w http.ResponseWriter, status int, message string, err error) error{
+	response := map[string]any{
+		"status":"error",
+		 "message":message,
+		 "error":err.Error(),
+	}
+	return WriteJsonResponse(w , status,response)
+}
 
 

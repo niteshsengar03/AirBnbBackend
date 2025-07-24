@@ -4,7 +4,6 @@ import (
 	"Auth_Api_Gateway/dto"
 	"Auth_Api_Gateway/service"
 	"Auth_Api_Gateway/utils"
-	"fmt"
 	"net/http"
 )
 
@@ -30,35 +29,27 @@ func (uc *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (uc *UserController) LoginUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Login User called in controller")
 
 	var payload dto.LoginUserRequestDTO
 
 	Jsonerr := utils.ReadJsonBody(r, &payload)
 	if Jsonerr != nil {
-		w.Write([]byte("Something went wrong"))
+		utils.WriteJsonErrorResponse(w, http.StatusBadRequest, "Error in reading the payload", Jsonerr)
 		return
 	}
 	// two ways to check error
 	utils.Validator.Struct(payload)
 
 	if ValidationErr := utils.Validator.Struct(payload); ValidationErr != nil {
-		w.Write([]byte("Invalid input type"))
-		fmt.Println("Validation Error: ", ValidationErr)
+		utils.WriteJsonErrorResponse(w, http.StatusBadRequest, "Invalid input type", ValidationErr)
 		return
 	}
 
 	token, err := uc.UserService.LoginUser(&payload)
 	if err != nil {
-		w.Write([]byte("Something went wrong"))
+		utils.WriteJsonErrorResponse(w, http.StatusInternalServerError, "Failed to login User", err)
 		return
 	}
-	response := map[string]any{
-		"token":    "User logged in successfully",
-		"data":     token,
-		"successs": true,
-		"error":    nil,
-	}
-	utils.WriteJsonResponse(w, 200, response)
+	utils.WriteJsonSuccessResponse(w, http.StatusOK, "User logged in successful", token)
 
 }
