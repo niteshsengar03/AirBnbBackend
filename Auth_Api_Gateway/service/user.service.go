@@ -4,10 +4,12 @@ import (
 	"Auth_Api_Gateway/config"
 	db "Auth_Api_Gateway/db/repositories"
 	"Auth_Api_Gateway/dto"
-
-	// "Auth_Api_Gateway/dto"
+	"Auth_Api_Gateway/models"
 	"Auth_Api_Gateway/utils"
+	"database/sql"
+	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -17,6 +19,7 @@ type UserService interface {
 	GetUserById() error
 	CreateUser(string, string, string) error
 	LoginUser(*dto.LoginUserRequestDTO) (string, error)
+	GetUserByEmail(string)(*models.User,error)
 }
 
 type UserServiceImp struct {
@@ -38,13 +41,37 @@ func (u *UserServiceImp) GetUserById() error {
 	return nil
 }
 
+func (u *UserServiceImp) GetUserByEmail(email string)(*models.User,error){
+	user,err:=u.UserRepository.GetByEmail(email)
+	if err!=nil{
+		if errors.Is(err,sql.ErrNoRows){
+			fmt.Printf("user with email %s not found",email)
+			return nil, fmt.Errorf("user with email %s not found",email)
+		}
+		return nil,err
+	}
+	return user,nil
+}
+
 func (u *UserServiceImp) CreateUser(username string, email string, password string) error {
+	_,err :=  u.GetUserByEmail(email)
+	if err == nil {
+		return fmt.Errorf("user with email %s already exists",email)
+	}else if !strings.Contains(err.Error(),"not found") {
+		return err
+	}
+	// proceed email is unique
+
 	fmt.Println("Creating user in UserService")
 	HassPassword, err := utils.HashPassword(password)
 	if err != nil {
-		fmt.Println("Error in getting hashed password")
+		return fmt.Errorf("failed to hash password: %v", err)
 	}
-	u.UserRepository.Create(username, email, HassPassword)
+	errRepo:=u.UserRepository.Create(username, email, HassPassword)
+	if errRepo != nil {
+		return fmt.Errorf("failed to create user in repository: %v", err)
+	}
+	fmt.Println("User created successfully in service")
 	return nil
 }
 

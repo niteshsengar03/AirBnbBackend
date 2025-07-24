@@ -63,14 +63,13 @@ func (u *UserRepositoryImp) GetByEmail(email string) (*models.User,error){
 	err := row.Scan(&user.Id,&user.Username,&user.Password)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			fmt.Println("No user found with the given Email")
+			// fmt.Println("No user found with the given Email")
 			return nil,err
 		} else {
-			fmt.Print("Error scanning user:", err)
-			return user,err
+			return nil,fmt.Errorf("error scanning user: %w", err)
 		}
 	}
-	fmt.Println("User fetched succesfully", *user)
+	// fmt.Println("User fetched succesfully", *user)
 	return user,nil
 }
 
@@ -83,13 +82,19 @@ func (u *UserRepositoryImp) Create(username string,email string,hassPassword str
 
 	if err != nil {
 		fmt.Println("Canot insert data")
-		return err
+		return fmt.Errorf("failed to insert user: %w", err)
 	}
 	rows, err := result.RowsAffected()
 	if err != nil {
-		fmt.Println("Cannot insert data")
+		return fmt.Errorf("user inserted, but failed to fetch rows affected: %w", err)
 	}
-	fmt.Println("no.rows affeted ", rows)
+
+
+	if rows == 0 {
+		return fmt.Errorf("user not created: no rows affected")
+	}
+
+	fmt.Println("User created successfully. Rows affected:", rows)
 	return nil
 }
 
