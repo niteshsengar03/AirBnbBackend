@@ -16,10 +16,11 @@ import (
 )
 
 type UserService interface {
-	GetUserById() error
-	CreateUser(string, string, string) error
-	LoginUser(*dto.LoginUserRequestDTO) (string, error)
-	GetUserByEmail(string)(*models.User,error)
+	GetUserById(id string) (*models.User,error)
+	GetUserByEmail(email string)(*models.User,error)
+	GetAllUser() ([]*models.User, error)
+	CreateUser(username string,email string,password string) error
+	LoginUser(payload *dto.LoginUserRequestDTO) (string, error)
 }
 
 type UserServiceImp struct {
@@ -35,10 +36,20 @@ func NewUserService(_userRepository db.UserRepository) UserService {
 	}
 }
 
-func (u *UserServiceImp) GetUserById() error {
+func (u *UserServiceImp) GetUserById(id string)  (*models.User,error) {
 	fmt.Println("Fetching user in UserService")
-	u.UserRepository.GetById()
-	return nil
+	user, err := u.UserRepository.GetById(id)
+	if err != nil {
+		fmt.Println("Error fetching user:", err)
+		return nil, err
+	}
+	return user, nil
+}
+
+func (u *UserServiceImp) GetAllUser()  ([]*models.User, error){
+	fmt.Println("Fetching all users from UserService")
+	users,err:=u.UserRepository.GetAll()
+	return  users,err
 }
 
 func (u *UserServiceImp) GetUserByEmail(email string)(*models.User,error){
@@ -78,19 +89,6 @@ func (u *UserServiceImp) CreateUser(username string, email string, password stri
 func (u *UserServiceImp) LoginUser(payload *dto.LoginUserRequestDTO) (string, error) {
 	fmt.Println("LoginUser called in Service layer")
 
-	// var userss *dto.LoginUserRequestDTO
-	// email := "nik@gmail.com"
-	// pswd := "1234"
-	// userss = &dto.LoginUserRequestDTO{
-	// 	Email:    email,
-	// 	Password: pswd,
-	// }
-	// err := utils.Validator.Struct(userss)
-	// if err != nil {
-	// 	// Validation failed, handle the error
-	// 	return "",err
-	// }
-
 	secret := []byte(config.GetString("JWT_SECRET_KEY", "hello"))
 	user, err := u.UserRepository.GetByEmail(payload.Email)
 	if user == nil {
@@ -116,8 +114,8 @@ func (u *UserServiceImp) LoginUser(payload *dto.LoginUserRequestDTO) (string, er
 		}
 		return token, nil
 	} else {
-		fmt.Println("Incorrect password")
+		return "",fmt.Errorf("incorrect password")
 	}
 
-	return "", nil
+	// return "", nil
 }
