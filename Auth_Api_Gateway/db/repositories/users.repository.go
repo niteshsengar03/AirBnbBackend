@@ -30,7 +30,7 @@ func (u *UserRepositoryImp) GetById(id string) (*models.User,error) {
 	// question based sytnax helps in avoiding sql injection
 
 	// prepare the querry
-	query := "SELECT id, username, email, password, created_at, updated_at FROM users WHERE id = ?"
+	query := "SELECT id, username, email, created_at, updated_at FROM users WHERE id = ?"
 
 	// exccute the querry
 	row := u.db.QueryRow(query, id)
