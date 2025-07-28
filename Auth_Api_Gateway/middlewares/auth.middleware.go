@@ -47,7 +47,9 @@ func JWTAuthMiddleware(next http.Handler) http.Handler {
 			http.Error(w, "Invalid or expired token", http.StatusUnauthorized)
 			return
 		}
+
 		fmt.Println("UserId: ",int64(userId),"UserEmail: ",userEmail)
+		
 		ctx := context.WithValue(r.Context(),"userId", strconv.FormatFloat(userId,'f',0,64))
 		ctx = context.WithValue(ctx,"email", userEmail)
 		next.ServeHTTP(w, r.WithContext(ctx))
