@@ -28,8 +28,20 @@ func ProxyToService(targetBaseUrl string, pathPrefix string) http.HandlerFunc {
 		//proxy.Director(r) ❌ calling yourself will keep you infinite recursion so we are stroring in variable and then calling it
 		
 		//Start manipulating the request
+		fmt.Println("Proxying req to: ",targetBaseUrl)
+
+		orignalPath := r.URL.Path
+		fmt.Println("OrignalPath: ",orignalPath)
+
+		strippedPath := strings.TrimPrefix(orignalPath,pathPrefix)
+		fmt.Println("strippedPath: ",strippedPath)
+
+		
+		
+		r.URL.Host = target.Host
+		r.URL.Path = target.Path + strippedPath
+
 		r.Host = target.Host
-		r.URL.Path = strings.TrimPrefix(r.URL.Path, pathPrefix)
 
 		if userId, ok := r.Context().Value("userId").(string); ok {
 			r.Header.Set("X-User-ID", userId)
