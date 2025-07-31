@@ -1,7 +1,87 @@
-Hii {{name}}
+{{!-- Hii {{name}}
 
 Welcome to {{appName}}
 We are excited to have you on board,
 If you have any questions or need help getting started, feel free to reach out to our support team.
 Best regards,
-The {{appName}} Team
+The {{appName}} Team --}}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome Email</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
+
+    .email-container {
+      max-width: 600px;
+      margin: 30px auto;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background-color: #4a90e2;
+      color: #ffffff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .content {
+      padding: 30px;
+      color: #333333;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .footer {
+      background-color: #f0f0f0;
+      padding: 20px;
+      text-align: center;
+      color: #777777;
+      font-size: 14px;
+    }
+
+    .button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #4a90e2;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <h1>Welcome to {{appName}}</h1>
+    </div>
+    <div class="content">
+      <p>Hi {{name}},</p>
+      <p>Welcome to <strong>{{appName}}</strong>! We’re thrilled to have you join our community.</p>
+      <p>If you have any questions or need help getting started, feel free to reach out to our support team.</p>
+      <a href="https://github.com/niteshsengar03/" class="button">Get Started</a>
+    </div>
+    <div class="footer">
+      Best regards,<br />
+      The {{appName}} Team
+    </div>
+  </div>
+</body>
+</html>
