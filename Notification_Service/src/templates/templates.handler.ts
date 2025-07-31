@@ -12,7 +12,6 @@ export async function renderMailTemplate(
 
   try {
     const content = await fs.readFile(templatePath, "utf-8");
-    console.log(content);
     const finalTemplate = Handlebars.compile(content);
     const result = finalTemplate(params);
     return result;
