@@ -1,6 +1,7 @@
 package app
 
 import (
+	router "Reviews_Service/Router"
 	ConfigDB "Reviews_Service/config/db"
 	"Reviews_Service/controller"
 	"Reviews_Service/db"
@@ -28,11 +29,11 @@ func (app *Application) Run() error {
 	}
 	repoObj := db.NewRepository(DB)
 	serviceObj := service.NewReviewService(repoObj)
-	controller.NewReviewController(serviceObj)
-	// routerObj :=router.NewReviewRouter(controllerObj)
+	controllerObj := controller.NewReviewController(serviceObj)
+	routerObj := router.NewReviewRouter(controllerObj)
 	server := &http.Server{
 		Addr:         app.Addr,
-		Handler:      nil,
+		Handler:      router.SetupRouter(routerObj),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
