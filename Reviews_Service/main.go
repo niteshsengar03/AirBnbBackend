@@ -5,9 +5,8 @@ import (
 	"Reviews_Service/config"
 )
 
-func main(){
+func main() {
 	config.Load()
-	cfg := app.NewConfig(config.GetString("PORT",":3001"))
-	app := app.NewApplication(*cfg)
+	app := app.NewApplication(config.GetString("PORT", ":3001"))
 	app.Run()
 }
