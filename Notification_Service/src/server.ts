@@ -6,8 +6,6 @@ import { genericErrorHandler } from "./middlewares/error.middleware";
 import logger from "./config/logger.config";
 import { attachCorrelationIdMiddleware } from "./middlewares/correlation.middleware";
 import { setupMailerWorker } from "./processors/email.processor";
-import { renderMailTemplate } from "./templates/templates.handler";
-import { addEmailToQueue } from "./producers/email.producer";
 
 // const app = express(); // implicit
 const app: Express = express(); // explcit
@@ -26,13 +24,13 @@ app.listen(serverConfig.PORT, async () => {
   logger.info(`Press Cnt+C to exist`, { server: "dev server" });
   setupMailerWorker();
   logger.info(`Mailer worker setup completed`);
-  addEmailToQueue( {
-    to:"niteshsengar9831@gmail.com",
-    subject:"Booking confirmed",
-    templateId:"welcome",
-    params:{
-      name:"Nitesh",
-      appName:"Hero"
-    }
-})
+//   addEmailToQueue( {
+//     to:"niteshsengar9831@gmail.com",
+//     subject:"Booking confirmed",
+//     templateId:"welcome",
+//     params:{
+//       name:"Nitesh",
+//       appName:"Hero"
+//     }
+// })
 });
