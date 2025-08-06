@@ -1,6 +1,10 @@
 MIGRATIONS_DIR = db/migrations
 DB_URL = root:3003@tcp(127.0.0.1:3306)/auth_dev
 
+
+app-run:
+	/home/nitesh/go-workspace/bin/air
+
 # create new migrations -> gmake migrate-create name="migrationName" 
 migrate-create: 
 	/home/nitesh/go-workspace/bin/goose -dir $(MIGRATIONS_DIR) create $(name) sql
