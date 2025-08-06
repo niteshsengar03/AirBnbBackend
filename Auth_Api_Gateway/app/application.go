@@ -31,13 +31,13 @@ func NewConfig () *Config{
 
 type Application struct {
 	Config Config
-	Store db.Storage
+	// Store db.Storage
 }
 // Constructor of Application Class
 func NewApplication(cfg Config)*Application{
 	return &Application{
 		Config: cfg,
-		Store: *db.NewStorage(), // initialise or make objects of all repository objects 
+		// Store: *db.NewStorage(), // initialise or make objects of all repository objects 
 	}
 }
 

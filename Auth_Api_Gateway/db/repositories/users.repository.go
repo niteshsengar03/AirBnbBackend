@@ -18,6 +18,7 @@ type UserRepositoryImp struct {
 	db *sql.DB // DB instance given by SQL
 }
 
+// cannot return *UserRepository becuase it's a inteface not struct
 func NewRepository(_db *sql.DB) UserRepository {
 	return &UserRepositoryImp{
 		db: _db,
