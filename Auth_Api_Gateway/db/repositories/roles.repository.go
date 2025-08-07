@@ -25,7 +25,7 @@ func NewRoleRepository(_db *sql.DB) RoleRepository {
 }
 
 func (r *RoleRepositoryImpl) GetRoleById(id int64) (*models.Roles, error) {
-	query := "SELECT id,name,description,created_at,update_at FROM roles WHERE id = ?"
+	query := "SELECT id,name,description,created_at,updated_at FROM roles WHERE id = ?"
 	row := r.db.QueryRow(query, id)
 	role := &models.Roles{}
 	err := row.Scan(&role.Id, &role.Name, &role.Description, &role.CreatedAt, &role.UpdatedAt)
@@ -36,7 +36,7 @@ func (r *RoleRepositoryImpl) GetRoleById(id int64) (*models.Roles, error) {
 }
 
 func (r *RoleRepositoryImpl) GetRoleByName(name string) (*models.Roles, error) {
-	query := "SELECT id,name,description,created_at,update_at FROM roles WHERE name = ?"
+	query := "SELECT id,name,description,created_at,updated_at FROM roles WHERE name = ?"
 	row := r.db.QueryRow(query, name)
 	role := &models.Roles{}
 	err := row.Scan(&role.Id, &role.Name, &role.Description, &role.CreatedAt, &role.UpdatedAt)
@@ -47,7 +47,7 @@ func (r *RoleRepositoryImpl) GetRoleByName(name string) (*models.Roles, error) {
 }
 
 func (r *RoleRepositoryImpl) GetAllRoles() ([]*models.Roles, error) {
-	query := "SELECT id, name, description, created_at, update_at FROM roles"
+	query := "SELECT id, name, description, created_at, updated_at FROM roles"
 	rows, err := r.db.Query(query)
 	if err != nil {
 		return nil, err
