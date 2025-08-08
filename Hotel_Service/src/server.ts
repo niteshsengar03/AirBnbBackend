@@ -5,6 +5,7 @@ import V1Router from './routers/v1/index.router';
 import { genericErrorHandler } from './middlewares/error.middleware';
 import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './middlewares/correlation.middleware';
+import prisma, { testConnection } from './prisma/client';
 
 
 
@@ -21,7 +22,29 @@ app.use('/api/v1',V1Router);
 app.use(genericErrorHandler);
 
 
-app.listen(serverConfig.PORT,()=>{
-    logger.info(`Port is running on http://localhost:${serverConfig.PORT}`);
-    logger.info(`Press Cnt+C to exist`,{"server":"dev server"});
-})
+// app.listen(serverConfig.PORT,()=>{
+//     logger.info(`Port is running on http://localhost:${serverConfig.PORT}`);
+//     logger.info(`Press Cnt+C to exist`,{"server":"dev server"});
+// })
+
+const startServer = async () => {
+  try {
+    // Test database connection
+    const isConnected = await testConnection();
+    
+    if (!isConnected) {
+      logger.error('Database connection failed. Server will not start.');
+      process.exit(1);
+    }
+    
+    app.listen(serverConfig.PORT, () => {
+      logger.info(`Server is running on http://localhost:${serverConfig.PORT}`);
+      logger.info(`Press Ctrl+C to exit`, {"server":"dev server"});
+    });
+  } catch (error) {
+    logger.error('Failed to start server:', error);
+    process.exit(1);
+  }
+}
+
+startServer();
