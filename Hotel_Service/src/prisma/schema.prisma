@@ -12,3 +12,14 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model hotels{
+  id Int @id @default(autoincrement())
+  name String
+  address String
+  location String
+  rating Decimal ?
+  rating_count Int ?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
