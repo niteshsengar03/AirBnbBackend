@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createHotelService, deleteHotelService, getAllHotelsService, getHotelByIdService, updateHotelService } from "../service/hotel.service";
+import { createHotelService, getAllHotelsService, getHotelByIdService, softDeleteHotelService, updateHotelService } from "../service/hotel.service";
 import { number } from "zod";
 
 export async function createHotelHandler(req:Request,res:Response){
@@ -28,13 +28,13 @@ export async function getAllHotelsHandler(req:Request,res:Response){
    })
 }
 
-export async function deleteHotelHandler(req:Request,res:Response){
-   const hotel = await deleteHotelService(parseInt(req.params.id))
-   res.status(200).json({
-      message:"success",
-      hotel
-   })
-}
+// export async function deleteHotelHandler(req:Request,res:Response){
+//    const hotel = await deleteHotelService(parseInt(req.params.id))
+//    res.status(200).json({
+//       message:"success",
+//       hotel
+//    })
+// }
 
 export async function updateHotelHandler(req:Request,res:Response){
    const intId = parseInt(req.params.id,10)
@@ -44,4 +44,13 @@ export async function updateHotelHandler(req:Request,res:Response){
       message:"success",
       hotel
    })
+}
+
+export async function softDeleteHotelHandler(req:Request,res:Response){
+    const intId = parseInt(req.params.id,10)
+   const deleted= await softDeleteHotelService(intId)
+
+    res.status(200).json({
+      success: deleted
+    })
 }
