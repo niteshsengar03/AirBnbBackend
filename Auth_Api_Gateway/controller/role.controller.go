@@ -22,6 +22,7 @@ func NewRoleController(roleService service.RoleService) *RoleController {
 }
 
 func (rc *RoleController) AssignRoleToUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Print("heoooooooooooooooo")
 	userId := chi.URLParam(r, "userId")
 	roleId := chi.URLParam(r, "roleId")
 	if userId == "" {
@@ -92,7 +93,7 @@ func (rc *RoleController) GetAllRoles(w http.ResponseWriter, r *http.Request) {
 	utils.WriteJsonSuccessResponse(w, http.StatusOK, "Roles fetched successfully", roles)
 }
 
-func (rc *RoleController) CreateRole(w http.ResponseWriter, r *http.Request) {
+func (rc *RoleController) CreateRole(w http.ResponseWriter, r *http.Request) { 
 	payload := r.Context().Value("payload").(dto.CreateRoleRequestDTO)
 
 	role, err := rc.RoleService.CreateRole(payload.Name, payload.Description)

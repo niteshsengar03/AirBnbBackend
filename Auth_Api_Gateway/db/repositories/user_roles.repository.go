@@ -3,6 +3,8 @@ package db
 import (
 	"Auth_Api_Gateway/models"
 	"database/sql"
+	"fmt"
+	"strings"
 )
 
 type UserRoleRepository interface {
@@ -13,6 +15,7 @@ type UserRoleRepository interface {
 	HasPermission(userId int64, permission string) (bool, error)
 	HasRole(userId int64, roleName string) (bool, error)
 	HasAllRoles(userId int64, roleNames []string) (bool, error)
+	HasAnyRole(userId int64, roleNames []string) (bool, error)
 }
 
 type UserRoleRepositoryImp struct {
@@ -133,8 +136,8 @@ func (r *UserRoleRepositoryImp) HasAllRoles(userId int64, roleNames []string) (b
           AND r.name IN (?)
         GROUP BY ur.user_id
     `
-
-	row := r.db.QueryRow(query, len(roleNames), userId, roleNames)
+	roleNameStr := strings.Join(roleNames, ",")
+	row := r.db.QueryRow(query, len(roleNames), userId, roleNameStr)
 
 	var hasAllRoles bool
 	if err := row.Scan(&hasAllRoles); err != nil {
@@ -145,4 +148,35 @@ func (r *UserRoleRepositoryImp) HasAllRoles(userId int64, roleNames []string) (b
 	}
 
 	return hasAllRoles, nil
+}
+
+func (r *UserRoleRepositoryImp) HasAnyRole(userId int64, roleNames []string) (bool, error) {
+
+	if len(roleNames) == 0 {
+		return true, nil // If no roles are specified, return true
+	}
+	placeholders := strings.Repeat("?,", len(roleNames))
+	placeholders = placeholders[:len(placeholders)-1]
+	query := fmt.Sprintf("SELECT COUNT(*) > 0 FROM user_roles ur INNER JOIN roles r ON ur.role_id = r.id WHERE ur.user_id = ? AND r.name IN (%s)", placeholders)
+
+	// Create args slice with userId first, then all roleNames
+	args := make([]interface{}, 0, 1+len(roleNames))
+	args = append(args, userId)
+	for _, roleName := range roleNames {
+		args = append(args, roleName)
+	}
+
+	row := r.db.QueryRow(query, args...)
+
+	var hasAnyRole bool
+	if err := row.Scan(&hasAnyRole); err != nil {
+		if err == sql.ErrNoRows {
+			return false, nil // No roles found for the user
+		}
+		return false, err // Return any other error
+	}
+
+	fmt.Println("hasAnyRole", hasAnyRole) 
+
+	return hasAnyRole, nil
 }
