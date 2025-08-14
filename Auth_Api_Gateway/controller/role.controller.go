@@ -20,6 +20,11 @@ func NewRoleController(roleService service.RoleService) *RoleController {
 	}
 }
 
+// func (rc *RoleController) AssignRoleToUser(w http.ResponseWriter, r *http.Request){
+// 	userId := chi.URLParam(r,"userId")
+// 	roleId := 
+// }
+
 func (rc *RoleController) GetRoleById(w http.ResponseWriter, r *http.Request) {
 	roleId := chi.URLParam(r, "id") // Extract role ID from URL parameters
 	if roleId == "" {
@@ -55,3 +60,4 @@ func (rc *RoleController) GetAllRoles(w http.ResponseWriter, r *http.Request) {
 
 	utils.WriteJsonSuccessResponse(w, http.StatusOK, "Roles fetched successfully", roles)
 }
+

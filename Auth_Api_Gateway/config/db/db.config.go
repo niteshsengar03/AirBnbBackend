@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/go-sql-driver/mysql"
-)
+)							
 func SetupDB()(*sql.DB,error){
 	cfg := mysql.NewConfig();
 	cfg.User = config.GetString("DB_USER","root")
