@@ -41,7 +41,7 @@ export async function updateHotelService(
   id: number,
   hotelData: updateHotelDTO
 ) {
-  await getHotelByIdService(id);
+  await getHotelByIdService(id );
   const hotel = await updateHotel(id, hotelData);
   return hotel;
 }

@@ -7,7 +7,7 @@ import logger from "./config/logger.config";
 import { attachCorrelationIdMiddleware } from "./middlewares/correlation.middleware";
 import { testConnection } from "./prisma/client";
 import { createHotel, getHotelById } from "./repositories/hotel.repositories";
-import { createHotelDTO } from "./DTO/hotel.dto";
+import { createHotelDTO } from "./DTO/hotel.dto";   
 
 // const app = express(); // implicit
 const app: Express = express(); // explcit

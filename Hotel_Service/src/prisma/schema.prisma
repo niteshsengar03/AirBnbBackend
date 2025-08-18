@@ -19,8 +19,45 @@ model hotels{
   address String
   location String
   rating Decimal ?
-  rating_count Int ?
+  rating_count Int ? 
+  roomCategory room_categories[]
+  room rooms[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   deleted_at DateTime? 
+}
+
+model rooms{
+  id Int @id @default(autoincrement())
+  room_category_id Int
+  room_category room_categories @relation(fields:[room_category_id], references: [id] , onDelete: Cascade, onUpdate: Cascade)
+  hotel_id Int
+  hotel hotels @relation(fields: [hotel_id],references: [id],onDelete: Cascade,onUpdate: Cascade)
+  room_no Int
+  date_of_availability DateTime
+  booking_id Int?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  deleted_at DateTime? 
+}
+
+model room_categories{
+  id Int @id @default(autoincrement())
+  room_type roomtype
+  price Int
+  hotel_id Int
+  hotel hotels @relation(fields: [hotel_id], references: [id],onDelete: Cascade,onUpdate: Cascade)
+  room_count Int
+  room rooms[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  deleted_at DateTime?
+}
+
+enum roomtype{
+  SINGLE
+  DOUBLE
+  FAMILY
+  DELUX
+  SUITE  
 }
