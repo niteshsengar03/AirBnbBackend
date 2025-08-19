@@ -176,7 +176,7 @@ func (r *UserRoleRepositoryImp) HasAnyRole(userId int64, roleNames []string) (bo
 		return false, err // Return any other error
 	}
 
-	fmt.Println("hasAnyRole", hasAnyRole) 
+	fmt.Println("hasAnyRole", hasAnyRole)
 
 	return hasAnyRole, nil
 }
