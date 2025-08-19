@@ -9,6 +9,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
+	"strconv"
 	"strings"
 	"time"
 
@@ -16,11 +18,14 @@ import (
 )
 
 type UserService interface {
-	GetUserById(id string) (*models.User,error)
-	GetUserByEmail(email string)(*models.User,error)
+	GetUserById(id string) (*models.User, error)
+	GetUserByEmail(email string) (*models.User, error)
 	GetAllUser() ([]*models.User, error)
-	CreateUser(username string,email string,password string) error
+	CreateUser(username string, email string, password string) error
 	LoginUser(payload *dto.LoginUserRequestDTO) (string, error)
+	GetVerificationByToken(token string) (*models.Verification, error)
+	MarkUserVerified(userId int64) error
+	DeleteVerificationToken(token string) error
 }
 
 type UserServiceImp struct {
@@ -36,7 +41,7 @@ func NewUserService(_userRepository db.UserRepository) UserService {
 	}
 }
 
-func (u *UserServiceImp) GetUserById(id string)  (*models.User,error) {
+func (u *UserServiceImp) GetUserById(id string) (*models.User, error) {
 	fmt.Println("Fetching user in UserService")
 	user, err := u.UserRepository.GetById(id)
 	if err != nil {
@@ -46,29 +51,29 @@ func (u *UserServiceImp) GetUserById(id string)  (*models.User,error) {
 	return user, nil
 }
 
-func (u *UserServiceImp) GetAllUser()  ([]*models.User, error){
+func (u *UserServiceImp) GetAllUser() ([]*models.User, error) {
 	fmt.Println("Fetching all users from UserService")
-	users,err:=u.UserRepository.GetAll()
-	return  users,err
+	users, err := u.UserRepository.GetAll()
+	return users, err
 }
 
-func (u *UserServiceImp) GetUserByEmail(email string)(*models.User,error){
-	user,err:=u.UserRepository.GetByEmail(email)
-	if err!=nil{
-		if errors.Is(err,sql.ErrNoRows){
-			fmt.Printf("user with email %s not found",email)
-			return nil, fmt.Errorf("user with email %s not found",email)
+func (u *UserServiceImp) GetUserByEmail(email string) (*models.User, error) {
+	user, err := u.UserRepository.GetByEmail(email)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			fmt.Printf("user with email %s not found", email)
+			return nil, fmt.Errorf("user with email %s not found", email)
 		}
-		return nil,err
+		return nil, err
 	}
-	return user,nil
+	return user, nil
 }
 
 func (u *UserServiceImp) CreateUser(username string, email string, password string) error {
-	_,err :=  u.GetUserByEmail(email)
+	_, err := u.GetUserByEmail(email)
 	if err == nil {
-		return fmt.Errorf("user with email %s already exists",email)
-	}else if !strings.Contains(err.Error(),"not found") {
+		return fmt.Errorf("user with email %s already exists", email)
+	} else if !strings.Contains(err.Error(), "not found") {
 		return err
 	}
 	// proceed email is unique
@@ -78,10 +83,23 @@ func (u *UserServiceImp) CreateUser(username string, email string, password stri
 	if err != nil {
 		return fmt.Errorf("failed to hash password: %v", err)
 	}
-	errRepo:=u.UserRepository.Create(username, email, HassPassword)
+	userId, errRepo := u.UserRepository.Create(username, email, HassPassword)
 	if errRepo != nil {
 		return fmt.Errorf("failed to create user in repository: %v", err)
 	}
+
+	token, err := utils.GenerateRandomToken(32)
+	if err != nil {
+		log.Fatal(err)
+	}
+	expiresAt := time.Now().Add(15 * time.Minute)
+	errVerifiaction := u.UserRepository.CreateVerification(userId, token, expiresAt)
+	if errVerifiaction != nil {
+		log.Println("Failed to create verification token:", err)
+	}
+	verificationLink := fmt.Sprintf("http://localhost:3031/api/v1/auth/verify?token=%s&userId=%d", token, userId)
+	fmt.Println("Verification Link:", verificationLink)
+
 	fmt.Println("User created successfully in service")
 	return nil
 }
@@ -114,8 +132,32 @@ func (u *UserServiceImp) LoginUser(payload *dto.LoginUserRequestDTO) (string, er
 		}
 		return token, nil
 	} else {
-		return "",fmt.Errorf("incorrect password")
+		return "", fmt.Errorf("incorrect password")
 	}
 
 	// return "", nil
+}
+
+func (u *UserServiceImp) GetVerificationByToken(token string) (*models.Verification, error){
+	veri,err:= u.UserRepository.GetVerificationByToken(token)
+	if err != nil {
+		fmt.Println("Error fetching Verification data:", err)
+		return nil, err
+	}
+	return veri, nil
+}
+
+func (u *UserServiceImp)  MarkUserVerified(userId int64) error{
+	userIdstring := strconv.FormatInt(userId,10)
+	user,_:=u.GetUserById(userIdstring)
+	if user==nil{
+		return fmt.Errorf("error fetching the user")
+	}
+	if user.Verified{
+		return fmt.Errorf("user is already verified")
+	}
+	return u.UserRepository.MarkUserVerified(userId)
+}
+func (u *UserServiceImp) DeleteVerificationToken(token string) error{
+	return  u.UserRepository.DeleteVerificationToken(token)
 }

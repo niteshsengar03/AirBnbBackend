@@ -22,7 +22,6 @@ func NewRoleController(roleService service.RoleService) *RoleController {
 }
 
 func (rc *RoleController) AssignRoleToUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Print("heoooooooooooooooo")
 	userId := chi.URLParam(r, "userId")
 	roleId := chi.URLParam(r, "roleId")
 	if userId == "" {

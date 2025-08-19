@@ -25,14 +25,12 @@ func NewConfig() *Config {
 
 type Application struct {
 	Config Config
-	// Store db.Storage
 }
 
 // Constructor of Application Class
 func NewApplication(cfg Config) *Application {
 	return &Application{
 		Config: cfg,
-		// Store: *db.NewStorage(), // initialise or make objects of all repository objects
 	}
 }
 
@@ -46,7 +44,7 @@ func (app *Application) Run() error {
 	rpr := db.NewRolePermissionRepository(DB)
 	ur := db.NewRepository(DB)
 	urp := db.NewUserRoleRepository(DB)
-	rs := service.NewRoleService(rr, rpr,urp)
+	rs := service.NewRoleService(rr, rpr, urp)
 	us := service.NewUserService(ur)
 	rc := controller.NewRoleController(rs)
 	uc := controller.NewUserController(us)
