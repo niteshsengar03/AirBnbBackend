@@ -1,3 +1,4 @@
+import { createRoomCateogoryDTO } from "../DTO/roomCategoryDto";
 import { getRoomCateogoryById } from "../repositories/roomCategory.repository";
 import { BadRequestError, NotFoundError } from "../utils/errors/app.error";
 import { RoomGenerationJob } from "../validator/roomGeneration.validator";
@@ -17,6 +18,14 @@ export async function generateRooms(jobData: RoomGenerationJob) {
     throw new BadRequestError(`Start date cannot be in past`);
 
   const totalDays = Math.ceil((endDate.getTime() - startDate.getTime())/(1000*60*60*24))
-  
-  
+}
+// process date in batches
+export async function processDateBatch(roomCategory:createRoomCateogoryDTO,startDate:Date,endDate:Date,priceOverride?:number){
+    let roomCreated = 0;
+    let dateProcessed = 0;
+
+    const currentDate = new Date(startDate);
+    // while(currentDate<=endDate){
+      
+    // }
 }
