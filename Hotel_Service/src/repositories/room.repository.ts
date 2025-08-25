@@ -1,3 +1,4 @@
+import { Prisma, rooms } from "@prisma/client";
 import logger from "../config/logger.config";
 import { CreateRoomDTO } from "../DTO/room.dto";
 import prisma from "../prisma/client";
@@ -66,4 +67,8 @@ export async function findByRoomCategoryIdAndDate(
       deleted_at: null,
     },
   });
+}
+
+export async function bulkCreate(rooms:Prisma.roomsCreateManyInput[]){
+  return await prisma.rooms.createMany({data:rooms})
 }
