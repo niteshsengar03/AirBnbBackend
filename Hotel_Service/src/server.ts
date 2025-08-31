@@ -6,8 +6,6 @@ import { genericErrorHandler } from "./middlewares/error.middleware";
 import logger from "./config/logger.config";
 import { attachCorrelationIdMiddleware } from "./middlewares/correlation.middleware";
 import { testConnection } from "./prisma/client";
-import { createHotel, getHotelById } from "./repositories/hotel.repositories";
-import { createHotelDTO } from "./DTO/hotel.dto";   
 import { setupRoomGererationWorker } from "./processors/roomGernation.processors";
 
 // const app = express(); // implicit

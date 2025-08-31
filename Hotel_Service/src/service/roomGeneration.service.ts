@@ -85,7 +85,7 @@ export async function processDateBatch(
       roomsToCreate.push({
         hotel_id: roomCategory.hotel_id,
         room_category_id: roomCategory.id,
-        date_of_availability: currentDate,
+        date_of_availability: new Date(currentDate),
         price: priceOverride || roomCategory.price,
       });
     }
