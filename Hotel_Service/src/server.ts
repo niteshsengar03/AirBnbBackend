@@ -8,6 +8,7 @@ import { attachCorrelationIdMiddleware } from "./middlewares/correlation.middlew
 import { testConnection } from "./prisma/client";
 import { createHotel, getHotelById } from "./repositories/hotel.repositories";
 import { createHotelDTO } from "./DTO/hotel.dto";   
+import { setupRoomGererationWorker } from "./processors/roomGernation.processors";
 
 // const app = express(); // implicit
 const app: Express = express(); // explcit
@@ -33,6 +34,7 @@ const startServer = async () => {
     app.listen(serverConfig.PORT, () => {
       logger.info(`Server is running on http://localhost:${serverConfig.PORT}`);
       logger.info(`Press Ctrl+C to exit`, { server: "dev server" });
+       setupRoomGererationWorker();
     });
   } catch (error) {
     logger.error("Failed to start server:", error);
